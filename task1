@@ -1,0 +1,94 @@
+a simple embedded system design using an Arduino microcontroller to count and display the number of times a push button is pressed:
+
+Hardware Components
+1. Arduino Uno or Arduino Nano
+2. Push button
+3. 16x2 LCD display (or serial monitor)
+4. Breadboard
+5. Jumper wires
+
+Circuit Diagram
+1. Connect the push button to digital pin 2 on the Arduino.
+2. Connect the 16x2 LCD display to the Arduino as follows:
+    - RS pin to digital pin 7
+    - E pin to digital pin 8
+    - D4 pin to digital pin 9
+    - D5 pin to digital pin 10
+    - D6 pin to digital pin 11
+    - D7 pin to digital pin 12
+    - VCC pin to 5V
+    - GND pin to GND
+3. Connect the breadboard power rails to the Arduino's 5V and GND pins.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Code
+
+c++
+const int buttonPin = 2;  // Push button pin
+const int lcdRS = 7;      // LCD RS pin
+const int lcdE = 8;       // LCD E pin
+const int lcdD4 = 9;      // LCD D4 pin
+const int lcdD5 = 10;     // LCD D5 pin
+const int lcdD6 = 11;     // LCD D6 pin
+const int lcdD7 = 12;     // LCD D7 pin
+
+int buttonState = 0;      // Button state
+int count = 0;             // Counter variable
+
+#include <LiquidCrystal.h>  // Include LCD library
+
+LiquidCrystal lcd(lcdRS, lcdE, lcdD4, lcdD5, lcdD6, lcdD7);
+
+void setup() {
+  pinMode(buttonPin, INPUT);  // Set button pin as input
+  lcd.begin(16, 2);            // Initialize LCD
+  lcd.setCursor(0, 0);          // Set LCD cursor
+  lcd.print("Push Button");     // Display title
+  lcd.setCursor(0, 1);          // Set LCD cursor
+  lcd.print("Counter: 0");       // Display initial count
+}
+
+void loop() {
+  buttonState = digitalRead(buttonPin);  // Read button state
+
+  if (buttonState == HIGH) {             // If button is pressed
+    delay(50);                             // Debounce delay
+    count++;                                // Increment counter
+    lcd.setCursor(0, 1);                   // Set LCD cursor
+    lcd.print("Counter: ");                 // Display counter label
+    lcd.print(count);                        // Display updated count
+    delay(200);                              // Delay to avoid multiple counts
+  }
+}
+
+
+Debouncing Technique
+The code uses a simple debouncing technique by introducing a delay of 50 milliseconds after detecting a button press. This ensures that the counter is incremented only once per button press, even if the button is pressed multiple times in quick succession.
+
+Serial Monitor Alternative
+If you prefer to use a serial monitor instead of an LCD display, you can modify the code to print the counter value to the serial monitor. Simply replace the LCD-related code with the following lines:
+
+
+c++
+Serial.begin(9600);  // Initialize serial communication
+
+...
+
+if (buttonState == HIGH) {
+  ...
+  Serial.print("Counter: ");
+  Serial.println(count);
+}
